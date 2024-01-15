@@ -63,7 +63,7 @@ const ProfilePage = () => {
   };
 
   const handleChangePass = async (data) => {
-    try {
+    try {   
       await apis.updatePassword(data);
       setChangePass(false);
       passForm.reset();

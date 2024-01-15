@@ -17,6 +17,8 @@ const CreateEvent = () => {
   const { token } = useAuth()
   const [url, setUrl] = useState('')
   const navigate = useNavigate();
+  const [user, setUser] = useState({})
+
   const {
     formState: { isSubmitting, errors },
     handleSubmit,
@@ -26,14 +28,30 @@ const CreateEvent = () => {
     },
   });
 
+  useEffect(() => {
+    const getProfile = async () => {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_SERVER}/api/user/`, {
+        method: 'GET',
+        headers: {
+          'authorization': `Bearer ${token}`
+        }
+      })
+
+      const data = await res.json() 
+      setUser(data.user)
+    }
+    getProfile()
+  }, [])
+
   const handleAddEvent = async (data) => {
     try {
+      if(!user.chatId) return alert("You must add your Telegram Bot ID before adding event!")
       const res = await fetch(`${process.env.REACT_APP_BACKEND_SERVER}/watch?url=${url}`, {
         headers: {
           'authorization': `Bearer ${token}`
         }
       })
-      const data = await res.json()
+      const data = await res.json()      
       if (!data.status) return alert(data.message)
       navigate('/myevents')
     } catch (error) {

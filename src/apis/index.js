@@ -54,7 +54,7 @@ const resetPassword = (data) => axios.post("/api/reset-password", data);
 const sendEmail = (data) => axios.post("/api/email-verification", data);
 const updateUser = (data) => axios.post("/api/user", data);
 const getUserInfor = () => axios.get("/api/user");
-const updatePassword = (data) => axios.post("/api/update-password", data);
+const updatePassword = (data) => axios.post(`/api/user/update-password`, data);
 const deleteUser = (ids) => axios.delete(`/api/user/${ids}`);
 
 
@@ -69,7 +69,7 @@ const createUser = (data) => {
   axios.post("/api/admin/user", data);
 };
 
-export const apis = {
+export const  apis = {
   login,
   register,
   verifyEmail,
