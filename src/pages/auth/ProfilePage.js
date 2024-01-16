@@ -29,7 +29,7 @@ const ProfilePage = () => {
   const { token } = useAuth()
   const passForm = useForm();
   const [openCloseAccount, setOpenCloseAccount] = useState(false);
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState(null)
   const [changeName, setChangeName] = useState(false);
   const [changePass, setChangePass] = useState(false);
 
@@ -96,6 +96,7 @@ const ProfilePage = () => {
             </LoadingButton>
           </DialogActions>
         </Dialog>
+
         <Typography variant="h4" mb={3}>
           Profile
         </Typography>
@@ -113,12 +114,11 @@ const ProfilePage = () => {
                 disabled
                 value={user?.email}
                 sx={{ maxWidth: 400 }}
-
               />
 
               <TextField
                 type="text"
-                value={user.fullName}
+                defaultValue={user?.fullName}
                 error={!!infoForm.formState.errors.name}
                 sx={{ maxWidth: 400 }}
                 disabled={!changeName}
@@ -134,7 +134,7 @@ const ProfilePage = () => {
               />
 
               <TextField
-                value={user.chatId ||'Telegram ID'}
+                defaultValue={user.chatId ||'Telegram ID'}
                 type="text"
                 error={!!infoForm.formState.errors.tgID}
                 sx={{ maxWidth: 400 }}
