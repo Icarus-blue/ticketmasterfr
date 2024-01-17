@@ -47,6 +47,9 @@ const blocketTypes = ['Full Price Tickets', ' Official Platinum Tickets', 'Resal
 const MyEvents = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   const [formData, setFormData] = useState({
     ticketType: '',
@@ -69,15 +72,13 @@ const MyEvents = () => {
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
+
   const { token } = useAuth()
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState({
     status: false,
     event: null
   });
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   const [events, setEvents] = useState([])
   const deleteForm = useForm();
@@ -108,7 +109,7 @@ const MyEvents = () => {
       headerName: "Url",
       width: 150,
       type: "string",
-    },
+    }
   ];
 
   const handleCloseDeleteDialog = () => {
@@ -125,10 +126,11 @@ const MyEvents = () => {
         }
       })
       const data = await res.data
-      console.log('data', data)
+
       if (!data.status) return alert(data.message)
 
       setOpenDialog({ status: false, event: null })
+
       setEvents(prev => {
         return prev.map(ev => {
           if (ev._id === selectedEvent._id) {
@@ -144,7 +146,6 @@ const MyEvents = () => {
       console.log(error);
     } finally {
       setIsSubmitting(false)
-
     }
   };
 
@@ -160,10 +161,8 @@ const MyEvents = () => {
         console.log(data)
         setEvents(data)
       } catch (err) {
-
       }
     }
-
     getEvents()
   }, [])
 
@@ -195,6 +194,7 @@ const MyEvents = () => {
       console.log(error.message)
     }
   }
+
   return (
     <Box>
       <Dialog open={openDialog.status} onClose={handleCloseDeleteDialog}>
@@ -227,7 +227,7 @@ const MyEvents = () => {
               >
 
                 {
-                  ticketTypeOptions.map(nbr => {
+                  openDialog.event?.ticketTypeArr.map(nbr => {
                     return (
 
                       <MenuItem value={nbr} key={nbr}>{nbr}</MenuItem>
@@ -239,35 +239,32 @@ const MyEvents = () => {
             </FormControl>
           </Box>
 
-          {
-            formData.ticketType !== 'Full price Ticket' && formData.ticketType !== 'Official Platinum Tickets' ? (
-              <Box className={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1em' }}>
-                <Typography>
-                  Blocked Ticket Types
-                </Typography>
-                <FormControl
 
-                  className={{}}>
-                  {
-                    blocketTypes.map(type => (
-                      <Box style={{ display: 'flex', alignItems: 'center' }}>
+          <Box className={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1em' }}>
+            <Typography>
+              Blocked Ticket Types
+            </Typography>
+            <FormControl
 
-                        <Checkbox
-                          value={type}
-                          id={type}
-                          onChange={(e) => {
-                            e.target.checked ? setFormData(prev => ({ ...prev, blockedType: [...prev.blockedType, type] })) : setFormData(prev => ({ ...prev, blockedType: prev.blockedType.filter(e => e === type) }))
-                          }}
+              className={{}}>
+              {
+                openDialog.event?.blockedTypeArr.map(type => (
+                  <Box style={{ display: 'flex', alignItems: 'center' }}>
 
-                        />
-                        <label for={type}>{type}</label>
-                      </Box>
-                    ))
-                  }
-                </FormControl>
-              </Box>
-            ) : null
-          }
+                    <Checkbox
+                      value={type}
+                      id={type}
+                      onChange={(e) => {
+                        e.target.checked ? setFormData(prev => ({ ...prev, blockedType: [...prev.blockedType, type] })) : setFormData(prev => ({ ...prev, blockedType: prev.blockedType.filter(e => e === type) }))
+                      }}
+
+                    />
+                    <label for={type}>{type}</label>
+                  </Box>
+                ))
+              }
+            </FormControl>
+          </Box>
           <Box>
 
             <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
@@ -293,41 +290,54 @@ const MyEvents = () => {
               </Select>
             </FormControl>
           </Box>
-          <Box style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
-            <label for='section'>Section:</label>
+          <Box>
+            <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
+              <InputLabel id="Section">Section</InputLabel>
+              <Select
+                name='Section'
+                onChange={(e) => handleChange(e)}
+                value={formData.section}
+                labelId="Section"
+                id="sectionid"
+                label="Section"
+              >
 
-            <select
-              onChange={(e) => handleChange(e)}
-              value={formData.section}
-              style={{ width: '100%', padding: '1em' }} className="ea" name="section" id="section"><option>HOGAN STAND - UPPER TIER</option><option>DAVIN STAND - UPPER TIER</option><option>RED ROUTE VIA ST JAMES AVE</option><option>FOSTER TCE &amp; STILE A</option><option>FOSTER TCE &amp; STILE B</option><option>FOSTER TCE &amp; STILE C</option><option>Best Available</option><option>RED ROUTE VIA JOSEPHS AVE</option><option>YELLOW ROUTE / MARGARETS TCE</option><option>&amp; STILES E (1-10)</option><option>PITCH</option><option>BLUE ROUTE VIA JONES' RD</option><option>&amp; STILES G (1-10)</option><option>&amp; STILES F (1-10)</option><option>STILES K</option><option>FOSTER TCE &amp; PITCH STILES</option><option>VERTIGO WARNING/LEVEL IS HIGH</option><option>This is a STANDING ticket (Over 14s only)</option><option>CUSACK STAND - LOWER TIER</option><option>HOGAN STAND - LOWER TIER</option><option>DAVIN STAND - LOWER TIER</option><option>CUSACK STAND-PREMIUM LEVEL</option><option>HOGAN STAND-PREMIUM LEVEL</option><option>DAVIN STAND-PREMIUM LEVEL</option><option>CUSACK STAND - UPPER TIER</option></select>
-          </Box>
+                {
+                  openDialog.event?.sectionArr.map(nbr => {
+                    return (
 
-          <Box style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
-            <label for='price_level'>Price Level:</label>
-            {
-              formData.ticketType !== 'Resale' ? (
-                <>
-                  <select
-                    onChange={(e) => handleChange(e)}
-                    value={formData.priceLevel}
-                    style={{ width: '100%', padding: '1em' }} className="ea" name="priceLevel" id="price_level"><option>Any Price</option><option>Price Range</option><option>£60.45</option><option>£101.00</option><option>£111.00</option><option>£131.00</option><option>£156.00</option><option>£186.00</option><option>£191.00</option><option>£305.00</option><option>£310.00</option><option>£315.00</option><option>£320.00</option><option>£325.00</option><option>£335.00</option><option>£340.00</option><option>£345.00</option><option>£350.00</option></select>
-                </>
-              ) : (
-                <>
-                  <TextField
-                    id='price_level'
-                    name='priceLevel'
-                    type="number"
-                    aria-valuemax={2000}
-                    aria-valuemin={20}
-                    onChange={(e) => handleChange(e)}
-                    value={formData.priceLevel}
-                    label={`custom price level (pounds)`}
+                      <MenuItem value={nbr} key={nbr}>{nbr}</MenuItem>
+                    )
+                  })
+                }
 
-                  />
-                </>
-              )
-            }
+              </Select>
+            </FormControl>
+          </Box>       
+
+          <Box>
+            <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
+              <InputLabel id="priceLevel">Price Level:</InputLabel>
+              <Select
+                name='priceLevel'
+                onChange={(e) => handleChange(e)}
+                value={formData.priceLevel}
+                labelId="priceLevel"
+                id="price_Level"
+                label="priceLevel"
+              >
+
+                {
+                  openDialog.event?.priceArr.map(nbr => {
+                    return (
+
+                      <MenuItem value={nbr} key={nbr}>{nbr}</MenuItem>
+                    )
+                  })
+                }
+
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -363,19 +373,7 @@ const MyEvents = () => {
               gap: 1,
             }}
           >
-
-            {/* <div>
-              <Typography variant="h5">My Events</Typography>
-              <p>
-                Only TM/LN Events | Only AXS Events | Show All Events | Clear Filter
-              </p>
-              <p >
-                List My Blocked Tickets
-              </p>
-
-            </div> */}
             <Box gap={1} display="flex">
-            
               <Button
                 variant="contained"
                 onClick={() => navigate("/myevents/new")}
@@ -450,6 +448,7 @@ function Row(props) {
                         {`${watch.ticketType} /`}
                       </Typography>
                       <Typography>
+
                         {`${watch.priceLevel} /`}
                       </Typography>
                       <Typography>
