@@ -37,13 +37,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from "axios";
 
-const ticketTypeOptions = [
-  'Any ticket Type', 'Full price Ticket', 'Official Platinum Tickets', 'Resale'
-]
-
-const blocketTypes = ['Full Price Tickets', ' Official Platinum Tickets', 'Resale']
-
-
 const MyEvents = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null)
@@ -54,18 +47,18 @@ const MyEvents = () => {
   const [formData, setFormData] = useState({
     ticketType: '',
     blockedType: [],
-    quantity: 1,
-    section: 'HOGAN STAND - UPPER TIER',
-    priceLevel: 'Any Price',
+    quantity: '',
+    section: '',
+    priceLevel: '',
   })
 
   useEffect(() => {
     setFormData({
       ticketType: '',
       blockedType: [],
-      quantity: 1,
-      section: 'HOGAN STAND - UPPER TIER',
-      priceLevel: 'Any Price',
+      quantity: '',
+      section: '',
+      priceLevel: '',
     })
   }, [selectedEvent?._id])
 
@@ -265,6 +258,7 @@ const MyEvents = () => {
               }
             </FormControl>
           </Box>
+
           <Box>
 
             <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
@@ -290,11 +284,12 @@ const MyEvents = () => {
               </Select>
             </FormControl>
           </Box>
+
           <Box>
             <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
               <InputLabel id="Section">Section</InputLabel>
               <Select
-                name='Section'
+                name='section'
                 onChange={(e) => handleChange(e)}
                 value={formData.section}
                 labelId="Section"
