@@ -19,6 +19,7 @@ import { LoadingButton } from "@mui/lab";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Edit } from "@mui/icons-material";
+import Rignton from '../../assets/Ring10.wav';
 
 const Livedropes = () => {
   const navigate = useNavigate();
@@ -139,6 +140,12 @@ const Livedropes = () => {
     }
   };
 
+  const playRing = () => {
+    var audio = new Audio(Rignton); // Replace 'path/to/sound.mp3' with the actual path to your sound file
+    audio.play();
+    console.log("test");
+  }
+
   useEffect(() => {
     const getDrops = async () => {
       try {
@@ -156,35 +163,6 @@ const Livedropes = () => {
 
   return (
     <Box>
-      <Dialog open={openDialog.delete} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Delete User</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure to delete selected User?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Stack
-            direction="row"
-            justifyContent="flex-end"
-            spacing={1}
-            component="form"
-            onSubmit={deleteForm.handleSubmit(handleDeleteEvent)}
-          >
-            <Button variant="text" onClick={handleCloseDeleteDialog}>
-              Cancel
-            </Button>
-            <LoadingButton
-              variant="contained"
-              color="error"
-              type="submit"
-              loading={deleteForm.formState.isSubmitting}
-            >
-              Delete
-            </LoadingButton>
-          </Stack>
-        </DialogActions>
-      </Dialog>
       <Card>
         <CardContent>
           <Box
@@ -208,9 +186,14 @@ const Livedropes = () => {
                 * If your drop times are shown in incorrect time zone, you can change your time zone settings from your profile page.
               </p>
             </div>
-
-       
           </Box>
+
+          <div style={{ marginBottom: 20 }}>
+            <input type="checkbox" id="myCheckbox" name="myCheckbox"></input>
+            <label for="myCheckbox">Horn</label>
+            <button style={{ marginLeft: 20 }} onClick={ playRing}>Test Horn</button>
+          </div>
+
           <DataGrid
             sx={{ height: 600, width: "100%" }}
             rows={drops}
