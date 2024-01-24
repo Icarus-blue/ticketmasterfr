@@ -37,7 +37,7 @@ const Livedropes = () => {
     {
       field: "name",
       headerName: "Event Name",
-      width: 150,
+      width: 200,
       type: "string",
       renderCell: (params) => {
         console.log("params", params);
@@ -47,19 +47,19 @@ const Livedropes = () => {
     {
       field: "date",
       headerName: "	Event Date",
-      width: 100,
+      width: 200,
       type: "string",
     },
     {
       field: "place",
       headerName: "Event Place",
-      width: 100,
+      width: 200,
       type: "string",
     },
     {
       field: "criteria",
       headerName: "Check Criteria",
-      width: 150,
+      width: 200,
       type: "string",
       renderCell: (params) => {
         return 'Any Ticket Type / Best Available / 2 / Any Price'
@@ -69,13 +69,13 @@ const Livedropes = () => {
     {
       field: "droptime",
       headerName: "	Drop Time",
-      width: 100,
+      width: 200,
       type: "string",
     },
     {
       field: "Section",
       headerName: "Section",
-      width: 150,
+      width: 200,
       type: "string",
       renderCell: (params) => {
         return <Typography>BLOCK - <Link style={{ color: 'lightblue' }}>Block</Link> </Typography>
@@ -149,7 +149,12 @@ const Livedropes = () => {
   useEffect(() => {
     const getDrops = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_SERVER}/live-drops`)
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_SERVER}/live-drops`,{
+          method: 'GET',
+          headers: {
+            'authorization': `Bearer ${token}`
+          }
+        })
         const data = await res.json()
         if (!data.status) return alert(data.message)
         setDrops(data?.liveDrops)
