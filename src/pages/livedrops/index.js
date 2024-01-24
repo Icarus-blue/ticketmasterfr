@@ -67,7 +67,7 @@ const Livedropes = () => {
     },
 
     {
-      field: "time",
+      field: "droptime",
       headerName: "	Drop Time",
       width: 100,
       type: "string",

@@ -52,7 +52,7 @@ const verifyEmail = (data) => axios.post(`/api/verify-email/`, data);
 const forgotPassword = (data) => axios.post(`/api/forgot-password/`, data);
 const resetPassword = (data) => axios.post("/api/reset-password", data);
 const sendEmail = (data) => axios.post("/api/email-verification", data);
-const updateUser = (data) => axios.post("/api/user", data);
+const updateUser = (data) => axios.post("/api/user/update", data);
 const getUserInfor = () => axios.get("/api/user");
 const updatePassword = (data) => axios.post(`/api/user/update-password`, data);
 const deleteUser = (ids) => axios.delete(`/api/user/${ids}`);
