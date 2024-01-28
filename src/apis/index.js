@@ -69,7 +69,9 @@ const createUser = (data) => {
   axios.post("/api/admin/user", data);
 };
 
-export const  apis = {
+const deleteEvent = (id) => axios.post(`/event/delete/${id}`);
+
+export const apis = {
   login,
   register,
   verifyEmail,
@@ -85,4 +87,5 @@ export const  apis = {
   getUserById,
   updateUserById,
   deleteUser,
+  deleteEvent
 };

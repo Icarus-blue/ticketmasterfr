@@ -22,7 +22,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { Link, useNavigate } from "react-router-dom";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useAuth } from "../../hooks/useAuth";
 import * as React from 'react';
 import Collapse from '@mui/material/Collapse';
@@ -36,6 +37,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from "axios";
+import { apis } from "../../apis";
 
 const MyEvents = () => {
   const [open, setOpen] = React.useState(false);
@@ -68,6 +70,7 @@ const MyEvents = () => {
 
   const { token } = useAuth()
   const navigate = useNavigate();
+
   const [openDialog, setOpenDialog] = useState({
     status: false,
     event: null
@@ -86,14 +89,14 @@ const MyEvents = () => {
     {
       field: "date",
       headerName: "Event Date",
-      width: 200,
+      width: 150,
       type: "string",
     },
 
     {
       field: "place",
       headerName: "Event Place",
-      width: 200,
+      width: 150,
       type: "string",
     },
 
@@ -102,7 +105,26 @@ const MyEvents = () => {
       headerName: "Url",
       width: 150,
       type: "string",
-    }
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <Stack direction="row" spacing={1}>
+            <IconButton
+              onClick={(e) => {
+                setSelectedRow(params.row);
+                setOpenDialog({ ...openDialog, delete: true });
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Stack>
+        );
+      },
+    },
   ];
 
   const handleCloseDeleteDialog = () => {
@@ -141,6 +163,7 @@ const MyEvents = () => {
       setIsSubmitting(false)
     }
   };
+
 
   useEffect(() => {
     const getEvents = async () => {
@@ -308,7 +331,7 @@ const MyEvents = () => {
 
               </Select>
             </FormControl>
-          </Box>       
+          </Box>
 
           <Box>
             <FormControl fullWidth style={{ display: 'flex', alignItemsflexDirection: 'column' }}>
@@ -388,6 +411,7 @@ const MyEvents = () => {
                   <TableCell align="left">Event Date</TableCell>
                   <TableCell align="left">Event Place</TableCell>
                   <TableCell align="left">Url</TableCell>
+                  <TableCell align="left">Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -407,9 +431,51 @@ const MyEvents = () => {
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const [eventid, setEventId] = React.useState(null);
+
+  const [openDialog, setOpenDialog] = useState({
+    status: false
+  });
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDialog({ status: false });
+  };
+
+  const deleteEvent = async () => {
+    try {
+      const res = await apis.deleteEvent(eventid);
+    } catch (err) {
+
+    }
+  }
 
   return (
     <React.Fragment>
+      <Dialog open={openDialog.status} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Are you going to delete this event?</DialogTitle>
+        <DialogActions>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            spacing={1}
+            component="form"
+          >
+            <Button variant="text" onClick={handleCloseDeleteDialog}>
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              type="submit"
+              onClick={() => {
+                deleteEvent();
+              }}
+            >
+              Delete
+            </LoadingButton>
+          </Stack>
+        </DialogActions>
+      </Dialog>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
           <IconButton
@@ -429,6 +495,13 @@ function Row(props) {
           <Link to={row.url}>
             {row.url}
           </Link>
+        </TableCell>
+        <TableCell align="left">
+          <DeleteIcon onClick={() => {
+            setOpenDialog({ status: true })
+            setEventId(row._id)
+          }
+          } />
         </TableCell>
       </TableRow>
       <TableRow>
